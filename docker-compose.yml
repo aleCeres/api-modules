@@ -1,0 +1,30 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_USER: ceres
+      POSTGRES_DB: ceres_db
+  graphql-engine:
+    image: hasura/graphql-engine:latest
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080/healthz" ]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    depends_on:
+      - "postgres"
+    restart: always
+    env_file:
+      - ./hasura/.env
+
+volumes:
+  db_data: null

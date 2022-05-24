@@ -1,0 +1,7 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": "@lasalefamine/eslint-config-base",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}

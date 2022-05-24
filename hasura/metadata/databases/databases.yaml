@@ -1,0 +1,8 @@
+- name: ceres_db
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url: postgres://ceres:postgrespassword@postgres:5432/ceres_db
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include ceres_db/tables/tables.yaml"
