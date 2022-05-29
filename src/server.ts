@@ -1,10 +1,13 @@
 import 'dotenv/config';
+import 'reflect-metadata';
 import correlator from 'express-correlation-id';
 import express from 'express';
 import helmet from 'helmet';
 
+import { AppDataSource } from './AppDataSource';
 import errorHandler from './middleware/errorHandler';
 import { googleAuthRouter } from './routes/user/auth/googleAuth';
+import log from './logger';
 
 const app = express();
 
@@ -35,6 +38,9 @@ app.use('/auth', googleAuthRouter);
 
 app.use(errorHandler);
 
-const server = app.listen(process.env.PORT);
+const server = app.listen(process.env.PORT, async () => {
+  log.info({ version: process.env.npm_package_version }, 'Server started');
+  await AppDataSource.initialize();
+});
 
 export default server;

@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  postgres_test:
+    image: postgres:14
+    restart: always
+    volumes:
+      - db_data_test:/var/lib/postgresql/data
+    env_file:
+      - test.env
+    ports:
+      - "5433:5432"
+  graphql-engine_test:
+    image: hasura/graphql-engine:latest
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8081/healthz" ]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    depends_on:
+      - "postgres_test"
+    restart: always
+    env_file:
+      - ./hasura/test.env
+
+volumes:
+  db_data_test: null
