@@ -1,5 +1,4 @@
 import request from 'supertest';
-import { QueryRunner } from 'typeorm';
 import app from '../src/server';
 import { AppDataSource } from '../src/AppDataSource';
 
@@ -13,30 +12,22 @@ jest.mock('../src/lib/google', () => ({
   })),
 }));
 
-beforeAll(async () => {
-  await AppDataSource.initialize();
-});
-
-afterAll(async () => {
-  await AppDataSource.destroy();
-});
-
 describe('auth/google', () => {
-  let queryRunner: QueryRunner;
+  beforeAll(async () => {
+    await AppDataSource.initialize();
+  });
 
-  beforeEach(async () => {
-    await AppDataSource.query('DELETE FROM public.user');
-    queryRunner = AppDataSource.createQueryRunner();
-    await queryRunner.startTransaction();
+  afterAll(async () => {
+    await AppDataSource.destroy();
   });
 
   afterEach(async () => {
-    await queryRunner.rollbackTransaction();
-    await queryRunner.release();
+    await AppDataSource.query('DELETE FROM public.user');
     jest.clearAllMocks();
+    app.close();
   });
 
-  it.only('should return 200', async () => {
+  it('should return 200', async () => {
     const usersBeforeInsertion = await AppDataSource.query('SELECT * FROM public.user');
 
     const res = await request(app)
@@ -49,12 +40,15 @@ describe('auth/google', () => {
     expect(usersAfterInsertion.length).toBe(1);
   });
 
-  it('should return 400', async () => {
+  it.each([
+    [{}, 400],
+    [{ tokenss: 'wrong tokensd' }, 400],
+  ])('%o should return %i', async (body, expectedStatusCode) => {
     const res = await request(app)
       .post('/auth/google')
-      .send({});
+      .send(body);
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(expectedStatusCode);
   });
 
   it('should return 500', async () => {

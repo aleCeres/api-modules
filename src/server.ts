@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { AppDataSource } from './AppDataSource';
 import errorHandler from './middleware/errorHandler';
 import { googleAuthRouter } from './routes/user/auth/googleAuth';
+import { usersRouter } from './routes/user/users';
 import log from './logger';
 
 const app = express();
@@ -35,6 +36,7 @@ app.use(correlator());
 
 // ROUTES
 app.use('/auth', googleAuthRouter);
+app.use('/users', usersRouter);
 
 app.use(errorHandler);
 
