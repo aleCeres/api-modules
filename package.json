@@ -28,11 +28,13 @@
       "hasura": "dotenv run hasura --skip-update-check --project ./hasura",
       "hasura:console": "yarn hasura console",
       "hasura:migrate": "yarn hasura migrate apply",
+      "hasura:metadata": "yarn hasura metadata apply",
       "compose": "docker-compose up -d",
       "typeorm": "typeorm-ts-node-commonjs",
       "test:hasura": "dotenv -f test.env run hasura --skip-update-check --project ./hasura",
       "test:hasura:console": "yarn test:hasura console",
       "test:hasura:migrate": "yarn test:hasura migrate apply",
+      "test:hasura:metadata": "yarn test:hasura metadata apply",
       "test:compose": "docker-compose -f docker-compose.test.yml up -d"
    },
    "dependencies": {
