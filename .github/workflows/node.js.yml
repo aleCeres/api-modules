@@ -24,6 +24,7 @@ jobs:
       - run: |
           yarn install
           yarn build
+          yarn global add dotenv-cli
           yarn test:compose
           yarn test:hasura metadata apply
           yarn test:hasura migrate apply --database-name ceres_db
